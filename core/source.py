@@ -138,21 +138,43 @@ def creatTables():
 			)""")
 	connection.commit()
 
+#===========================================
+# une simple fonction de recupération des informations de connexions de l'uilisateur
+def userCoordonne():
+	list_output = []
+	user_name = input("Enter your name :")
+	user_pass = input("Enter the user pass word :")
+	if ((user_name and user_pass) != ""):
+		# les codes à exécuté si l'utilisateur rentrer très biens ces donnes
+		list_output.append(user_name)
+		list_output.append(user_pass)
+		return (list_output)
+	else:
+		return ("Les informations ne son pas remplis completement ")
+#==============================================
+# La fonctions de verification de présent de l'utilisateur déjà dans la base de donnée
+def verifInDataBase(funct):
+	user_datas = funct()
+	temp_user_name = user_datas[0]
+	temp_user_pass = user_datas[1]
 
+	connexion = sql("data_base.db")
+	cursor = connexion.cursor()
+	cursor.execute("SELECT * FROM users (u_name, u_password)")
+	liste_users = cursor.fetchall()
+	connexion.commit()
+	connexion.close()
+
+	for user in liste_users:
+		if (temp_user_name and temp_user_pass) in user:
+			return ("this name is already taken by a other player")
+		else:
+			pass
+		
 # nous verifions si les tables sont vraiment creer
 
 if __name__ == "__main__":
-	out = createDataBase()
-	con = out[0]
-	cur = out[1]
-	creatTables()
-	ligne = cur.execute("SELECT * FROM users")
 	
-	temp_liste = []
-
-	for l in ligne:
-		temp_liste.append(l)
-	con.close()
 
 	if len(temp_liste) == 0:
 		print("The data base id created")
